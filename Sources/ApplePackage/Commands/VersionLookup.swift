@@ -7,6 +7,7 @@
 
 import AsyncHTTPClient
 import Foundation
+import NIOFoundationCompat
 
 public enum VersionLookup {
     public nonisolated static func getVersionMetadata(

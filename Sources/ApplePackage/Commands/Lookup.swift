@@ -7,6 +7,7 @@
 
 import AsyncHTTPClient
 import Foundation
+import NIOFoundationCompat
 
 public enum Lookup {
     private struct LookupResponse: Codable {
