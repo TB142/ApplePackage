@@ -5,11 +5,6 @@ import PackageDescription
 
 let package = Package(
     name: "ApplePackage",
-    platforms: [
-        .iOS(.v15),
-        .macCatalyst(.v14),
-        .macOS(.v12),
-    ],
     products: [
         .library(name: "ApplePackage", targets: ["ApplePackage"]),
     ],

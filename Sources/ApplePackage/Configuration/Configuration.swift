@@ -45,7 +45,7 @@ public enum Configuration {
     public static let timeoutConnect: Int64 = 10
     public static let timeoutRead: Int64 = 30
 
-    #if os(macOS)
+    #if os(macOS) || os(Linux)
         public nonisolated(unsafe) static var homePath: URL = FileManager.default
             .homeDirectoryForCurrentUser
             .appendingPathComponent(".ipatool", isDirectory: true)
