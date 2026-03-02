@@ -1,0 +1,38 @@
+services:
+  # Build the library
+  swift-build-lib:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    command: swift build --target ApplePackage
+
+  # Build the CLI executable
+  swift-build-tool:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    command: swift build --target ApplePackageTool
+
+  # Run tests
+  swift-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    command: swift test
+
+  # Interactive shell for debugging
+  swift-shell:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    command: /bin/bash
+    stdin_open: true
+    tty: true

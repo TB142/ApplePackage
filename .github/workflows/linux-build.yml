@@ -1,0 +1,45 @@
+name: Linux Build
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    container: swift:6.2-noble
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y libssl-dev zlib1g-dev
+      
+      - name: Build library (ApplePackage)
+        run: swift build --target ApplePackage 2>&1
+        continue-on-error: true
+        id: build-lib
+      
+      - name: Build CLI tool (ApplePackageTool)
+        run: swift build --target ApplePackageTool 2>&1
+        continue-on-error: true
+        id: build-tool
+      
+      - name: Run tests
+        run: swift test 2>&1
+        continue-on-error: true
+        id: test
+      
+      - name: Report Status
+        run: |
+          echo "=== Build Summary ==="
+          echo "Library build: ${{ steps.build-lib.outcome }}"
+          echo "CLI tool build: ${{ steps.build-tool.outcome }}"
+          echo "Tests: ${{ steps.test.outcome }}"
+          echo ""
+          echo "Note: This workflow is used to identify Linux compatibility issues"
