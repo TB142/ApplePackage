@@ -6,6 +6,7 @@
 //
 
 @testable import ApplePackage
+import FoundationNetworking
 import XCTest
 import ZIPFoundation
 
