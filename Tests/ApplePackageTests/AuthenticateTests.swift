@@ -5,7 +5,6 @@
 //  Created by qaq on 9/14/25.
 //
 
-import AppKit
 @testable import ApplePackage
 import XCTest
 
@@ -57,12 +56,7 @@ final class ApplePackageAuthenticateTests: XCTestCase {
             saveLoginAccount(result, for: email)
         } catch {
             print("[?] first attempt failed: \(error)")
-            let alert = NSAlert()
-            alert.messageText = "Apple Package Auth Failed"
-            alert.informativeText = "Please fill out the verification code you received on your device."
-            alert.alertStyle = .warning
-            alert.addButton(withTitle: "OK")
-            alert.runModal()
+            print("Please fill out the verification code you received on your device.")
 
             // Re-read code from file after user interaction
             if let updatedCode = TestConfiguration.code {

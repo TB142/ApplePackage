@@ -5,7 +5,6 @@
 //  Created by qaq on 9/15/25.
 //
 
-import AppKit
 @testable import ApplePackage
 import XCTest
 
