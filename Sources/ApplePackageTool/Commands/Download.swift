@@ -104,7 +104,7 @@ struct Download: AsyncParsableCommand {
             request.setValue("bytes=\(startByte)-", forHTTPHeaderField: "Range")
         }
 
-        let (asyncBytes, response) = try await URLSession.shared.bytes(for: request)
+        let (data, response) = try await URLSession.shared.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse,
               200 ... 299 ~= httpResponse.statusCode || httpResponse.statusCode == 206
         else {
@@ -119,29 +119,17 @@ struct Download: AsyncParsableCommand {
             FileManager.default.createFile(atPath: fileURL.path, contents: nil, attributes: nil)
             fileHandle = try FileHandle(forWritingTo: fileURL)
         }
-
         defer {
             try? fileHandle.close()
         }
 
-        var downloadedBytes: Int64 = startByte
-        var lastProgressUpdate = Date()
-        let progressUpdateInterval: TimeInterval = 0.5
-
-        print("", terminator: "")
-
-        for try await byte in asyncBytes {
-            let data = Data([byte])
+        // Write all data at once (less memory efficient but works on Linux)
+        if !data.isEmpty {
             try fileHandle.write(contentsOf: data)
-            downloadedBytes += 1
-
-            let now = Date()
-            if now.timeIntervalSince(lastProgressUpdate) >= progressUpdateInterval {
-                updateProgress(downloaded: downloadedBytes, total: totalSize)
-                lastProgressUpdate = now
-            }
         }
 
+        // Update progress once after download
+        let downloadedBytes = startByte + Int64(data.count)
         updateProgress(downloaded: downloadedBytes, total: totalSize)
         print("")
     }
