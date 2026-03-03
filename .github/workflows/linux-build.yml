@@ -3,8 +3,14 @@ name: Linux Build
 on:
   push:
     branches: [main, master]
-  pull_request:
-    branches: [main, master]
+  # Note: We don't run on pull_request because:
+  # 1. The Apple workflow already validates the build on PR
+  # 2. This avoids duplicate runs when PRs are merged
+  # 3. Linux build runs after merge to verify main branch health
+
+concurrency:
+  group: linux-build-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-linux:
@@ -22,24 +28,9 @@ jobs:
       
       - name: Build library (ApplePackage)
         run: swift build --target ApplePackage 2>&1
-        continue-on-error: true
-        id: build-lib
       
       - name: Build CLI tool (ApplePackageTool)
         run: swift build --target ApplePackageTool 2>&1
-        continue-on-error: true
-        id: build-tool
       
       - name: Run tests
         run: swift test 2>&1
-        continue-on-error: true
-        id: test
-      
-      - name: Report Status
-        run: |
-          echo "=== Build Summary ==="
-          echo "Library build: ${{ steps.build-lib.outcome }}"
-          echo "CLI tool build: ${{ steps.build-tool.outcome }}"
-          echo "Tests: ${{ steps.test.outcome }}"
-          echo ""
-          echo "Note: This workflow is used to identify Linux compatibility issues"
