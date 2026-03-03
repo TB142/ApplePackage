@@ -8,6 +8,7 @@
 import ApplePackage
 import ArgumentParser
 import Foundation
+import FoundationNetworking
 
 struct Download: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
